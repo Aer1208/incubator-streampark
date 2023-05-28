@@ -16,7 +16,38 @@
 -->
 <template>
   <div>
-    <BasicTable @register="registerTable" @fetch-success="onFetchSuccess" />
+    <BasicTable @register="registerTable" @fetch-success="onFetchSuccess" >
+      <template #toolbar>
+        <a-button type="primary" @click="handleCreate" v-auth="'menu:add'">
+          <Icon icon="ant-design:plus-outlined" />
+          {{ t('common.add') }}
+        </a-button>
+      </template>
+      <template #bodyCell="{ column, record }">
+        <template v-if="column.dataIndex === 'action'">
+          <TableAction
+            :actions="[
+              {
+                icon: 'clarity:note-edit-line',
+                auth: 'menu:update',
+                tooltip: t('system.menu.modifyMenu'),
+                onClick: handleEdit.bind(null, record),
+              },
+              {
+                icon: 'ant-design:delete-outlined',
+                color: 'error',
+                tooltip: t('system.menu.deleteMenu'),
+                auth: 'member:delete',
+                popConfirm: {
+                  title: t('system.member.deletePopConfirm'),
+                  confirm: handleDelete.bind(null, record),
+                },
+              },
+            ]"
+          />
+        </template>
+      </template>
+    </BasicTable>
     <MenuDrawer
       :okText="t('common.submitText')"
       @register="registerDrawer"
@@ -27,7 +58,7 @@
 <script lang="ts">
   import { defineComponent, nextTick } from 'vue';
 
-  import { BasicTable, useTable } from '/@/components/Table';
+  import {BasicTable, TableAction, useTable} from '/@/components/Table';
   import { getMenuList } from '/@/api/base/system';
 
   import { useDrawer } from '/@/components/Drawer';
@@ -37,10 +68,13 @@
   import { useMessage } from '/@/hooks/web/useMessage';
   import { useI18n } from '/@/hooks/web/useI18n';
   import { isArray } from '/@/utils/is';
+  import Icon from "/@/components/Icon";
+  import {deleteMenu} from "/@/api/system/menu";
+  import {deleteUser} from "/@/api/system/user";
 
   export default defineComponent({
     name: 'MenuManagement',
-    components: { BasicTable, MenuDrawer },
+    components: {Icon, TableAction, BasicTable, MenuDrawer },
     setup() {
       const [registerDrawer, { openDrawer }] = useDrawer();
       const { createMessage } = useMessage();
@@ -71,11 +105,11 @@
         bordered: true,
         showIndexColumn: false,
         canResize: false,
-        // actionColumn: {
-        //   width: 100,
-        //   title: 'Operation',
-        //   dataIndex: 'action',
-        // },
+        actionColumn: {
+          width: 100,
+          title: 'Operation',
+          dataIndex: 'action',
+        },
       });
       function handleMenuName(menus: Recordable[]) {
         if (isArray(menus)) {
@@ -108,12 +142,27 @@
         nextTick(expandAll);
       }
 
+      async function handleDelete(record: Recordable) {
+        const hide = createMessage.loading('deleteing');
+        try {
+          await deleteMenu(record)
+          createMessage.success(t('system.menu.table.deleteSuccess', [record.title]));
+          reload();
+        } catch (error) {
+          console.error('menu delete fail:', error);
+        } finally {
+          hide();
+        }
+
+      }
+
       return {
         t,
         registerTable,
         registerDrawer,
         handleCreate,
         handleEdit,
+        handleDelete,
         handleSuccess,
         onFetchSuccess,
       };

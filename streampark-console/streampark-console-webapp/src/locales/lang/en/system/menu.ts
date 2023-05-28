@@ -15,6 +15,10 @@
  * limitations under the License.
  */
 export default {
+  addMenu: 'Add Menu',
+  modifyMenu: 'Edit Menu',
+  deleteMenu: 'Delete Menu',
+  deletePopConfirm: 'Are you sure delete this Menu ?',
   table: {
     title: 'Menu List',
     name: 'Menu Name',
@@ -25,5 +29,6 @@ export default {
     permission: 'Permission',
     order: 'order',
     display: 'display',
+    deleteSuccess: 'delete menu [ {0} ] successful',
   },
 };

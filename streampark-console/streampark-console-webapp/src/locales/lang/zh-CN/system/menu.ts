@@ -15,6 +15,10 @@
  * limitations under the License.
  */
 export default {
+  addMenu: '添加菜单',
+  modifyMenu: '编辑菜单',
+  deleteMenu: '删除菜单',
+  deletePopConfirm: '确定要删除这个菜单 ?',
   table: {
     title: '菜单列表',
     name: '菜单名称',
@@ -25,5 +29,6 @@ export default {
     permission: '权限',
     order: '排序',
     display: '展示',
+    deleteSuccess: '删除菜单 【 {0} 】 成功'
   },
 };

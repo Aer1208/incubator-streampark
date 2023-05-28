@@ -21,6 +21,7 @@ enum Api {
   MenuRouter = '/menu/router',
   AddMenu = '/menu/post',
   UpdateMenu = '/menu/update',
+  DeleteMenu = '/menu/delete',
 }
 
 export const getMenuRouter = (): Promise<getMenuListResultModel> => {
@@ -33,4 +34,8 @@ export function editMenu(data?: Recordable): Promise<boolean | undefined> {
 
 export function addMenu(data?) {
   return defHttp.post({ url: Api.AddMenu, data });
+}
+
+export function deleteMenu(data? : Recordable) {
+  return defHttp.delete({url: Api.DeleteMenu, data : {menuIds: data.id}});
 }

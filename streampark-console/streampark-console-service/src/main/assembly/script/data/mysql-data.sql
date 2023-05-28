@@ -117,6 +117,9 @@ insert into `t_menu` values (100066, 100015, 'view', null, null, 'app:view', nul
 insert into `t_menu` values (100067, 100053, 'view', NULL, NULL, 'variable:view', NULL, '1', 1, null, now(), now());
 insert into `t_menu` values (100068, 100033, 'view', null, null, 'setting:view', null, '1', 1, null, now(), now());
 insert into `t_menu` values (100069, 100053, 'depend view', null, null, 'variable:depend_apps', null, '1', 1, NULL, now(), now());
+insert into `t_menu` values (100070, 100003, 'add', null, null, 'menu:add', null, '1', 1, null, now(), now());
+insert into `t_menu` values (100071, 100003, 'update', null, null, 'menu:update', null, '1', 1, null, now(), now());
+insert into `t_menu` values (100072, 100003, 'delete', null, null, 'menu:delete', null, '1', 1, null, now(), now());
 
 -- ----------------------------
 -- Records of t_role
