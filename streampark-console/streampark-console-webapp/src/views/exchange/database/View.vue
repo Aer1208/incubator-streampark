@@ -3,6 +3,10 @@
 </template>
 
 <script>
+import {defHttp} from "/@/utils/http/axios";
+defHttp.get({
+  url:'/database/list'
+})
 export default {
   name: "View"
 }

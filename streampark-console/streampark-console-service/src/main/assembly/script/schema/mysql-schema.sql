@@ -492,5 +492,24 @@ create table `t_alert_config` (
   index `inx_alert_user` (`user_id`) using btree
 ) engine = innodb default charset = utf8mb4 collate = utf8mb4_general_ci;
 
+drop table if exists `t_database`;
+create table `t_database` (
+    `id` bigint not null auto_increment primary key,
+    `db_name` varchar(50) not null comment '数据源名称',
+    `db_desc` varchar(255) comment '数据源描述',
+    `db_type` smallint comment '数据源类型，1：mysql,2:oracle,3:kafka,....',
+    `db_ip` varchar(200) not null comment '数据源id,kafka数据源有多个ip，用逗号分割',
+    `db_port` smallint comment '端口',
+    `db_user` varchar(50) comment '数据源连接账号',
+    `db_pass` varchar(100) comment '数据源连接密码',
+    `db_connection_params` text comment '数据库链接参数，以json方式保存',
+    `oracle_type` smallint default 1 comment '1:service_name, 2:sid',
+    `user_id` bigint default null comment '用户id',
+    `team_id` bigint not null comment '团队id',
+    `create_time` datetime not null default current_timestamp comment 'create time',
+    `modify_time` datetime not null default current_timestamp on update current_timestamp comment 'modify time',
+    index `inx_alert_user` (`user_id`) using btree,
+    index `inx_team` (`team_id`) using btree
+) engine = innodb default charset = utf8mb4 collate = utf8mb4_general_ci;
 
 set foreign_key_checks = 1;
