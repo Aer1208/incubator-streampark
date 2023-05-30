@@ -32,6 +32,7 @@ public class DatabaseController {
     @PostMapping("add")
     @RequiresPermissions("database:add")
     public RestResponse createDatabase(Database database) throws Exception {
+        // 创建数据源
         databaseService.createDatabase(database);
         return RestResponse.success().data(true);
     }
