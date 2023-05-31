@@ -1,4 +1,4 @@
-package org.apache.streampark.console.exchange;
+package org.apache.streampark.console.exchange.enums;
 
 import java.util.Arrays;
 import java.util.HashMap;

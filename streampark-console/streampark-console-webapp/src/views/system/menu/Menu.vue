@@ -70,7 +70,6 @@
   import { isArray } from '/@/utils/is';
   import Icon from "/@/components/Icon";
   import {deleteMenu} from "/@/api/system/menu";
-  import {deleteUser} from "/@/api/system/user";
 
   export default defineComponent({
     name: 'MenuManagement',

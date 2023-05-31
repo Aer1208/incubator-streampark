@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.lang.StringUtils;
 import org.apache.streampark.common.util.Utils;
 import org.apache.streampark.console.base.domain.RestRequest;
-import org.apache.streampark.console.exchange.DatabaseTypes;
+import org.apache.streampark.console.exchange.enums.DatabaseTypes;
 import org.apache.streampark.console.exchange.entity.Database;
 import org.apache.streampark.console.exchange.mapper.DatabaseMapper;
 import org.apache.streampark.console.exchange.service.DatabaseService;
