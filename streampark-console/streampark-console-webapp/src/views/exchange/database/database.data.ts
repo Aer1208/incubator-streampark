@@ -18,6 +18,24 @@ export const enum OracleType {
   SID = 2,
 }
 
+function getDbTypeName(dbType) {
+  if (dbType === DBType.MYSQL) {
+    return "Mysql";
+  } else if (dbType === DBType.ORACLE) {
+    return "Oracle";
+  } else if (dbType === DBType.HDFS ) {
+    return "Hdfs";
+  } else if (dbType === DBType.STARROCKS) {
+    return "StarRocks";
+  } else if ( dbType === DBType.KAFKA ) {
+    return "Kafka";
+  } else if ( dbType === DBType.HBASE) {
+    return "Hbase";
+  } else if (dbType === DBType.MONGO) {
+    return "Mongo";
+  }
+}
+
 export const columns: BasicColumn[] = [
   { title: t('exchange.database.form.dbName'), dataIndex: 'dbName', sorter: true },
   { title: t('exchange.database.form.dbIp'), dataIndex: 'dbIp' },
@@ -26,9 +44,9 @@ export const columns: BasicColumn[] = [
     title: t('exchange.database.form.dbType'),
     dataIndex: 'dbType',
     customRender: ({ record }) => {
-      const enable = record?.dbType === 1;
+      const enable = record?.dbType === DBType.MYSQL;
       const color = enable ? 'green' : 'red';
-      const text = enable ? t('system.user.effective') : t('system.user.locked');
+      const text = getDbTypeName(record?.dbType);
       return h(Tag, { color }, () => text);
     },
   },

@@ -79,7 +79,7 @@ export default defineComponent({
     const { createMessage } = useMessage();
     const { t } = useI18n();
     const [registerTable, { reload, expandAll }] = useTable({
-      title: t('system.menu.table.title'),
+      title: t('exchange.database.table.title'),
       api: getDatabaseList,
       afterFetch(result) {
         try {
