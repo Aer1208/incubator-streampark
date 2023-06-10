@@ -12,36 +12,35 @@ import java.util.Date;
 @TableName("t_database")
 public class Database implements Serializable {
 
-    @TableId(type = IdType.AUTO)
-    private Long id;
+  @TableId(type = IdType.AUTO)
+  private Long id;
 
-    private String dbName;
+  private String dbName;
 
-    private String dbDesc;
+  private String dbDesc;
 
-    private Integer dbType;
+  private Integer dbType;
 
-    private String dbIp;
+  private String dbIp;
 
-    private Integer dbPort;
+  private Integer dbPort;
 
-    private String dbUser;
+  private String dbUser;
 
-    private String dbPass;
+  private String dbPass;
 
-    private String dbConnectionParams;
+  private String dbConnectionParams;
 
-    private Long userId;
+  private Long userId;
 
-    private Long teamId;
+  private Long teamId;
 
-    private Short oracleType;
+  private Short oracleType;
 
-    private Date createTime;
+  private Date createTime;
 
-    private Date modifyTime;
+  private Date modifyTime;
 
-    private transient String createTimeFrom;
-    private transient String createTimeTo;
-
+  private transient String createTimeFrom;
+  private transient String createTimeTo;
 }
