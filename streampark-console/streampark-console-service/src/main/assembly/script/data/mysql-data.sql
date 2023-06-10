@@ -121,6 +121,15 @@ insert into `t_menu` values (100070, 100003, 'add', null, null, 'menu:add', null
 insert into `t_menu` values (100071, 100003, 'update', null, null, 'menu:update', null, '1', 1, null, now(), now());
 insert into `t_menu` values (100072, 100003, 'delete', null, null, 'menu:delete', null, '1', 1, null, now(), now());
 
+INSERT INTO streampark.t_menu (parent_id,menu_name,`path`,component,perms,icon,`type`,display,order_num,create_time,modify_time) VALUES
+ (0,'数据集成','/exchange','PageView',NULL,'chrome','0',1,3,'2023-05-28 09:26:10','2023-05-28 09:33:04'),
+ (100073,'数据源管理','/exchange/database','exchange/database/View',NULL,'database','0',1,1,'2023-05-28 10:21:52','2023-05-28 10:21:52'),
+ (100077,'/database/list',NULL,NULL,'database:list',NULL,'1',0,1,'2023-05-30 21:59:27','2023-05-30 21:59:27'),
+ (100077,'/database/add',NULL,NULL,'database:add',NULL,'1',0,2,'2023-05-31 23:00:49','2023-05-31 23:00:49'),
+ (100077,'/database/update',NULL,NULL,'database:update',NULL,'1',0,3,'2023-05-31 23:01:18','2023-05-31 23:01:17'),
+ (100077,'/database/delete',NULL,NULL,'database:delete',NULL,'1',0,5,'2023-05-31 23:01:41','2023-05-31 23:17:43'),
+ (100073,'任务管理','/exchange/task','exchange/task/Add',NULL,'ordered-list','0',1,2,'2023-06-09 21:32:04','2023-06-09 21:33:36');
+
 -- ----------------------------
 -- Records of t_role
 -- ----------------------------
