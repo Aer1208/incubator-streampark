@@ -15,14 +15,14 @@ public interface DatabaseService extends IService<Database> {
      * @return 数据库类型,类型ID,类型名称
      * @throws Exception
      */
-    Map<Integer, String> getDbTypes() throws Exception;
+    List<Map<String, Object>> getDbTypes() throws Exception;
 
     /**
      * 获取源端数据源
      * @return
      * @throws Exception
      */
-    Map<Integer,String> getSourceTypes() throws  Exception;
+    List<Map<String, Object>> getSourceTypes() throws  Exception;
 
     /**
      * 根据类型ID获取数据源列表

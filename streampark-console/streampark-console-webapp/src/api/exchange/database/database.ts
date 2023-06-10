@@ -6,7 +6,8 @@ enum Api{
   UPDATE = "/database/update",
   DELETE = "/database/delete",
   SOURCE_DB_TYPES = "/database/source_types",
-  DB_TYPES = "/database/db_types"
+  DB_TYPES = "/database/db_types",
+  BY_TYPE = "/database/by_type",
 }
 
 export function getDatabaseList(data?: Recordable) {
@@ -49,4 +50,13 @@ export function getDBTypes() {
   return defHttp.get({
     url: Api.DB_TYPES,
   });
+}
+
+export function getDataBaseByType(dbType:number) {
+  return defHttp.post({
+    url: Api.BY_TYPE,
+    data: {
+      dbType: dbType,
+    }
+  })
 }

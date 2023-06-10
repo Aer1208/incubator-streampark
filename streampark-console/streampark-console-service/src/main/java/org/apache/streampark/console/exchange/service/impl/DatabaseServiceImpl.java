@@ -24,12 +24,12 @@ import java.util.Map;
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true, rollbackFor = Exception.class)
 public class DatabaseServiceImpl extends ServiceImpl<DatabaseMapper, Database> implements DatabaseService {
     @Override
-    public Map<Integer, String> getDbTypes() throws Exception {
+    public List<Map<String, Object>>getDbTypes() throws Exception {
         return DatabaseTypes.getTypes();
     }
 
     @Override
-    public Map<Integer, String> getSourceTypes() throws Exception {
+    public List<Map<String, Object>> getSourceTypes() throws Exception {
         return DatabaseTypes.getSourceTypes();
     }
 

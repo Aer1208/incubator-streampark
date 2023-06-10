@@ -1,8 +1,6 @@
 package org.apache.streampark.console.exchange.enums;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public enum DatabaseTypes {
     MYSQL(1, "Mysql", true),
@@ -28,16 +26,26 @@ public enum DatabaseTypes {
         this.isSource = isSource;
     }
 
-    public static Map<Integer, String> getSourceTypes() {
-        HashMap<Integer, String> sourceDbMaps = new HashMap<>();
-        Arrays.stream(DatabaseTypes.values()).filter(x-> x.isSource).map(x->sourceDbMaps.put(x.dbType, x.dbName));
-        return sourceDbMaps;
+    public static List<Map<String, Object>> getSourceTypes() {
+        List<Map<String, Object>> result = new ArrayList<>();
+        Arrays.stream(DatabaseTypes.values()).filter(x-> x.isSource).forEach(x->{
+            HashMap<String, Object> sourceDbMaps = new HashMap<>();
+            sourceDbMaps.put("sourceType", x.dbType);
+            sourceDbMaps.put("sourceName", x.dbName);
+            result.add(sourceDbMaps);
+        });
+        return result;
     }
 
-    public static Map<Integer, String> getTypes() {
-        HashMap<Integer, String> sourceDbMaps = new HashMap<>();
-        Arrays.stream(DatabaseTypes.values()).map(x->sourceDbMaps.put(x.dbType, x.dbName));
-        return sourceDbMaps;
+    public static List<Map<String, Object>> getTypes() {
+        List<Map<String, Object>> result = new ArrayList<>();
+        Arrays.stream(DatabaseTypes.values()).forEach(x->{
+            HashMap<String, Object> sourceDbMaps = new HashMap<>();
+            sourceDbMaps.put("sourceType", x.dbType);
+            sourceDbMaps.put("sourceName", x.dbName);
+            result.add(sourceDbMaps);
+        });
+        return result;
     }
 
 

@@ -61,4 +61,9 @@ public class DatabaseController {
         return RestResponse.success().data(databaseService.getDbTypes());
     }
 
+    @PostMapping("by_type")
+    public RestResponse getDatabasesByType(Integer dbType) throws Exception {
+        return RestResponse.success().data(databaseService.getDatabasesByType(dbType));
+    }
+
 }
