@@ -1,6 +1,7 @@
 package org.apache.streampark.console.exchange.service;
 
 import org.apache.streampark.console.base.domain.RestRequest;
+import org.apache.streampark.console.exchange.bean.ColumnsResponse;
 import org.apache.streampark.console.exchange.entity.Database;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -69,4 +70,14 @@ public interface DatabaseService extends IService<Database> {
    * @throws Exception
    */
   IPage<Database> findDatabases(Database database, RestRequest request) throws Exception;
+
+  /**
+   * 获取数据库下所有表
+   *
+   * @param id
+   * @return
+   */
+  public List<String> getTablesByDbId(Long id) throws Exception;
+
+  public ColumnsResponse getColumnsByTable(Long id, String tableName) throws Exception;
 }

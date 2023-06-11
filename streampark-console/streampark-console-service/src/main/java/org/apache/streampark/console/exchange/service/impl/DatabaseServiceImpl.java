@@ -2,6 +2,7 @@ package org.apache.streampark.console.exchange.service.impl;
 
 import org.apache.streampark.common.util.Utils;
 import org.apache.streampark.console.base.domain.RestRequest;
+import org.apache.streampark.console.exchange.bean.ColumnsResponse;
 import org.apache.streampark.console.exchange.entity.Database;
 import org.apache.streampark.console.exchange.enums.DatabaseTypes;
 import org.apache.streampark.console.exchange.mapper.DatabaseMapper;
@@ -89,5 +90,23 @@ public class DatabaseServiceImpl extends ServiceImpl<DatabaseMapper, Database>
       databases.setRecords(Collections.emptyList());
     }
     return databases;
+  }
+
+  @Override
+  public List<String> getTablesByDbId(Long id) throws Exception {
+    Database database = baseMapper.selectById(id);
+    Utils.required(database != null, "找不到数据库id=" + id + "的数据库，");
+    DatabaseTypes databaseTypes = DatabaseTypes.valueOf(database.getDbType());
+    Utils.required(databaseTypes != null, "找不到数据库类型");
+    return databaseTypes.getTables(database);
+  }
+
+  @Override
+  public ColumnsResponse getColumnsByTable(Long id, String tableName) throws Exception {
+    Database database = baseMapper.selectById(id);
+    Utils.required(database != null, "找不到数据库id=" + id + "的数据库，");
+    DatabaseTypes databaseTypes = DatabaseTypes.valueOf(database.getDbType());
+    Utils.required(databaseTypes != null, "找不到数据库类型");
+    return databaseTypes.getColumns(database, tableName);
   }
 }
