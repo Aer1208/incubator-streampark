@@ -66,4 +66,19 @@ public class DatabaseController {
   public RestResponse getDatabasesByType(Integer dbType) throws Exception {
     return RestResponse.success().data(databaseService.getDatabasesByType(dbType));
   }
+
+  @GetMapping("databases")
+  public RestResponse databases(Long id) throws Exception {
+    return RestResponse.success().data(databaseService.getDatabases(id));
+  }
+
+  @GetMapping("tables")
+  public RestResponse getTables(Long id) throws Exception {
+    return RestResponse.success().data(databaseService.getTablesByDbId(id));
+  }
+
+  @GetMapping("columns")
+  public RestResponse getColumns(Long id, String tableName) throws Exception {
+    return RestResponse.success().data(databaseService.getColumnsByTable(id, tableName));
+  }
 }

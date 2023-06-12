@@ -31,6 +31,18 @@ public interface DatabaseMeta {
     return tables;
   }
 
+  default List<String> getDatabases(Database database) throws Exception {
+    List<String> databases = new ArrayList<>();
+    Connection conn = getConnection(database);
+    try (ResultSet resultSet = conn.prepareStatement(getDatabaseSql()).executeQuery()) {
+      while (resultSet.next()) {
+        databases.add(resultSet.getString(1));
+      }
+    }
+    conn.close();
+    return databases;
+  }
+
   /**
    * 获取字段列表
    *
@@ -87,4 +99,11 @@ public interface DatabaseMeta {
    * @return 查询字段有3个，第一个字段名称，第二个字段类型，第三个是否未主键
    */
   String getColumnSql(Database database, String tableName);
+
+  /**
+   * 获取数据库列表
+   *
+   * @return
+   */
+  String getDatabaseSql();
 }

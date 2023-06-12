@@ -30,4 +30,9 @@ public class MysqlDatabaseMeta implements DatabaseMeta {
             + "where c.TABLE_SCHEMA  ='%s' and TABLE_NAME ='%s'",
         database.getDbName(), tableName);
   }
+
+  @Override
+  public String getDatabaseSql() {
+    return "show databases";
+  }
 }

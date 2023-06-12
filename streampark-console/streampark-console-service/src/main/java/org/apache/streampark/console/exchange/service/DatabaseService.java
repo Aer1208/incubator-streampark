@@ -80,4 +80,13 @@ public interface DatabaseService extends IService<Database> {
   public List<String> getTablesByDbId(Long id) throws Exception;
 
   public ColumnsResponse getColumnsByTable(Long id, String tableName) throws Exception;
+
+  /**
+   * 获取数据库对象下的所有数据库名称
+   *
+   * @param id 数据库对象ID
+   * @return 所有数据库名称
+   * @throws Exception
+   */
+  List<String> getDatabases(Long id) throws Exception;
 }
