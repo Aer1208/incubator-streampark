@@ -492,8 +492,8 @@ create table `t_alert_config` (
   index `inx_alert_user` (`user_id`) using btree
 ) engine = innodb default charset = utf8mb4 collate = utf8mb4_general_ci;
 
-drop table if exists `t_database`;
-create table `t_database` (
+drop table if exists `t_exchange_database`;
+create table `t_exchange_database` (
     `id` bigint not null auto_increment primary key,
     `db_name` varchar(50) not null comment '数据源名称',
     `db_desc` varchar(255) comment '数据源描述',
@@ -504,6 +504,7 @@ create table `t_database` (
     `db_pass` varchar(100) comment '数据源连接密码',
     `db_connection_params` text comment '数据库链接参数，以json方式保存',
     `oracle_type` smallint default 1 comment '1:service_name, 2:sid',
+    `oracle_database` varchar(20) comment 'oracle 数据库实列名称',
     `user_id` bigint default null comment '用户id',
     `team_id` bigint not null comment '团队id',
     `create_time` datetime not null default current_timestamp comment 'create time',
@@ -511,5 +512,37 @@ create table `t_database` (
     index `inx_alert_user` (`user_id`) using btree,
     index `inx_team` (`team_id`) using btree
 ) engine = innodb default charset = utf8mb4 collate = utf8mb4_general_ci;
+
+drop table if exists `t_exchange_task`;
+create table `t_exchange_task` (
+    `task_id` bigint not null auto_increment primary key,
+    `task_name` varchar(100) not null comment '任务名称',
+    `task_desc` varchar(200) comment '任务描述',
+    `source_type` smallint comment '采集数据源类型',
+    `source_id` bigint comment '采集数据源ID',
+    `db_name` varchar(20) comment '数据库名称',
+    `source_params` text comment '数据源连接参数',
+    `user_id` bigint default null comment '用户id',
+    `team_id` bigint not null comment '团队id',
+    `create_time` datetime not null default current_timestamp comment 'create time',
+    `modify_time` datetime not null default current_timestamp on update current_timestamp comment 'modify time',
+    index `inx_alert_user` (`user_id`) using btree,
+    index `inx_team` (`team_id`) using btree
+) engine = innodb default charset = utf8mb4 collate = utf8mb4_general_ci comment '采集主任务';
+
+drop table if exists `t_exchange_subtask`;
+create table `t_exchange_subtask` (
+    `sub_task_id` bigint not null auto_increment primary key,
+    `task_id` bigint comment '任务id',
+    `source_table_name` varchar(100) not null comment '采集数据源中表名',
+    `source_fields` varchar(500) comment '采集字段列表',
+    `source_types` varchar(500) comment '采集字段类型列表',
+    `pk_fields` varchar(100) comment '主键字段列表',
+    `target_type` smallint comment '目标类型',
+    `target_id` bigint comment '目标数据源ID',
+    `target_db_name` varchar(100) comment '目标数据库名称',
+    `target_table_name` varchar(100) comment '目标表名称',
+    `target_params` text comment '目标参数'
+) engine = innodb default charset = utf8mb4 collate = utf8mb4_general_ci comment '采集子任务';
 
 set foreign_key_checks = 1;

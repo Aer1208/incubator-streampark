@@ -75,9 +75,10 @@ public interface DatabaseService extends IService<Database> {
    * 获取数据库下所有表
    *
    * @param id
+   * @param dbName
    * @return
    */
-  public List<String> getTablesByDbId(Long id) throws Exception;
+  public List<String> getTablesByDbId(Long id, String dbName) throws Exception;
 
   public ColumnsResponse getColumnsByTable(Long id, String tableName) throws Exception;
 

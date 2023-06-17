@@ -16,7 +16,8 @@ export default {
     dbPass: "Password",
     add: 'Add Database',
     edit: 'Edit Database',
-    oracleType: "Oracle Type"
+    oracleType: "Oracle Type",
+    oracleDatabase: "Oracle Database",
   },
   rule:{
     dbNameRequire: 'Database Name is require',

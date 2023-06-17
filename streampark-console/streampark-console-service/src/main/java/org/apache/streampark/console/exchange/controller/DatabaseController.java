@@ -73,8 +73,8 @@ public class DatabaseController {
   }
 
   @GetMapping("tables")
-  public RestResponse getTables(Long id) throws Exception {
-    return RestResponse.success().data(databaseService.getTablesByDbId(id));
+  public RestResponse getTables(Long id, String dbName) throws Exception {
+    return RestResponse.success().data(databaseService.getTablesByDbId(id, dbName));
   }
 
   @GetMapping("columns")

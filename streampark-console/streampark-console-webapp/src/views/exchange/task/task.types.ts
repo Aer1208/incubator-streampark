@@ -5,17 +5,20 @@ export interface Task {
   sourceType: number,
   sourceId: number,
   sourceParams:string,
-  subTasks: Array<SubTask>
+  subTasks: Array<SubTask>,
+  dbName:string,
 }
 
 export interface SubTask {
   subTaskId:number,
   sourceTableName: String,
-  sourceFields:Array<string>,
-  sourceTypes: Array<string>,
+  sourceFields:string,
+  sourceTypes: string,
   pkFields: string,
   targetType:number,
   targetId:number,
+  targetDbName:string,
   targetTableName:string,
   targetParams:string,
+  tmpSourceFields:Array<String>,
 }

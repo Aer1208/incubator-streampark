@@ -93,12 +93,12 @@ public class DatabaseServiceImpl extends ServiceImpl<DatabaseMapper, Database>
   }
 
   @Override
-  public List<String> getTablesByDbId(Long id) throws Exception {
+  public List<String> getTablesByDbId(Long id, String dbName) throws Exception {
     Database database = baseMapper.selectById(id);
     Utils.required(database != null, "找不到数据库id=" + id + "的数据库，");
     DatabaseTypes databaseTypes = DatabaseTypes.valueOf(database.getDbType());
     Utils.required(databaseTypes != null, "找不到数据库类型");
-    return databaseTypes.getTables(database);
+    return databaseTypes.getTables(database, dbName);
   }
 
   @Override

@@ -33,9 +33,9 @@ public enum DatabaseTypes {
    * @param database
    * @return
    */
-  public List<String> getTables(Database database) throws Exception {
+  public List<String> getTables(Database database, String dbName) throws Exception {
     if (databaseMeta != null) {
-      return databaseMeta.getTables(database);
+      return databaseMeta.getTables(database, dbName);
     }
     return null;
   }

@@ -15,10 +15,9 @@ public class MysqlDatabaseMeta implements DatabaseMeta {
   }
 
   @Override
-  public String getTableSql(Database database) {
+  public String getTableSql(String dbName) {
     return String.format(
-        "select TABLE_NAME  from information_schema.TABLES t where t.TABLE_SCHEMA = '%s'",
-        database.getDbName());
+        "select TABLE_NAME  from information_schema.TABLES t where t.TABLE_SCHEMA = '%s'", dbName);
   }
 
   @Override

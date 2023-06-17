@@ -18,11 +18,11 @@ public interface DatabaseMeta {
    * @return
    * @throws Exception
    */
-  default List<String> getTables(Database database) throws Exception {
+  default List<String> getTables(Database database, String dbName) throws Exception {
 
     List<String> tables = new ArrayList<>();
     Connection conn = getConnection(database);
-    try (ResultSet resultSet = conn.prepareStatement(getTableSql(database)).executeQuery()) {
+    try (ResultSet resultSet = conn.prepareStatement(getTableSql(dbName)).executeQuery()) {
       while (resultSet.next()) {
         tables.add(resultSet.getString(1));
       }
@@ -86,10 +86,10 @@ public interface DatabaseMeta {
   /**
    * 获取表的查询语句
    *
-   * @param database
+   * @param dbName
    * @return
    */
-  String getTableSql(Database database);
+  String getTableSql(String dbName);
 
   /**
    * 根据表名和数据库对象获取查询表字段列表

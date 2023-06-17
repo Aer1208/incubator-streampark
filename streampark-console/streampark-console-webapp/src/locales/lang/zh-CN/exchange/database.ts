@@ -16,7 +16,8 @@ export default {
     dbPass: "密码",
     add: '添加数据源',
     edit: '更新数据源',
-    oracleType: "Oracle实列类型"
+    oracleType: "Oracle实列类型",
+    oracleDatabase:"Oracle数据库",
   },
   rule:{
     dbNameRequire: '数据源名称必须填写',

@@ -9,7 +9,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Data
-@TableName("t_database")
+@TableName("t_exchange_database")
 public class Database implements Serializable {
 
   @TableId(type = IdType.AUTO)
@@ -36,6 +36,8 @@ public class Database implements Serializable {
   private Long teamId;
 
   private Short oracleType;
+
+  private String oracleDatabase;
 
   private Date createTime;
 

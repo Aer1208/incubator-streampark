@@ -22,7 +22,7 @@ public class DatabaseMetaTest {
 
   @Test
   public void testGetTables() throws Exception {
-    List<String> tables = databaseService.getTablesByDbId(1L);
+    List<String> tables = databaseService.getTablesByDbId(1L, "streampark");
     System.out.println(tables);
   }
 

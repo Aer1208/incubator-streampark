@@ -19,8 +19,16 @@
 import {defineComponent, reactive, ref, UnwrapRef} from "vue";
 import {SubTask, Task} from "/@/views/exchange/task/task.types";
 import {useI18n} from "/@/hooks/web/useI18n";
+import {useMessage} from "/@/hooks/web/useMessage";
 import {Form, FormItem, Select, Input, Table, Card, Button, Drawer, Tag} from 'ant-design-vue';
-import {getDataBaseByType, getDBTypes, getSourceDbTypes} from "/@/api/exchange/database/database";
+import {
+  getColumns,
+  getDataBaseByType,
+  getDatabases,
+  getDBTypes,
+  getSourceDbTypes, getTables
+} from "/@/api/exchange/database/database";
+import {addTask} from "/@/api/exchange/task/task";
 
 export default defineComponent({
   components:{
@@ -37,18 +45,37 @@ export default defineComponent({
   },
   setup() {
     const { t } = useI18n();
+    const { createMessage } = useMessage();
     // 支持采集的源数据库类型
     let sourceDbTypes:any = ref<any[]>([]);
     // 所有数据库类型
     let dbTypes:any = ref<any[]>([]);
-    // 选择源数据库后，需要展示的数据库列表
-    let databases:any = ref([]);
+    // 选择源数据库后，需要展示的源数据库列表
+    let sourceDatabases:any = ref([]);
     // 选择目标数据库后，需要展示的数据库列表
     let allDatabase:any = ref([]);
     // 新增天机子任务窗口
     let visible = ref<boolean>(false);
     // 所有子任务列表
     let subTasks:any = ref([])
+
+    // 选择数据库后，显示改数据库下的所有数据库列表
+    let databases = ref([]);
+
+    // 选择源数据库后，需要展示的表列表
+    let sourceTables = ref([]);
+
+    // 选择目标数据库后，需要展示的表列表
+    let targetTables = ref([])
+
+    // 选择表后，需要展示的字段列表
+    let fields = ref([]);
+
+    // 临时存放源字段类型
+    let sourceFields = ref([]);
+
+    // 目标数据库列表
+    let targetDatabases = ref([]);
 
     // 任务模型
     const taskModel: UnwrapRef<Task> = reactive({
@@ -59,6 +86,7 @@ export default defineComponent({
       sourceId: 0,
       sourceParams: null,
       subTasks: [],
+      dbName:null,
     })
 
     // 子任务模型
@@ -67,9 +95,11 @@ export default defineComponent({
       sourceTableName: null,
       sourceFields:[],
       sourceTypes: [],
+      tmpSourceFields:[],
       pkFields: null,
       targetType:null,
       targetId:0,
+      targetDbName:null,
       targetTableName:null,
       targetParams:null,
     })
@@ -93,7 +123,7 @@ export default defineComponent({
      */
     async function changeSourceType() {
       taskModel.sourceId = null;
-      databases.value = await getDataBaseByType(taskModel.sourceType);
+      sourceDatabases.value = await getDataBaseByType(taskModel.sourceType);
     };
 
     async function changeDbType() {
@@ -104,10 +134,10 @@ export default defineComponent({
      * TODO: 后端接口未开发
      * 提交新增列表
      */
-    function onSubmit() {
+    async function onSubmit() {
       taskModel.subTasks = subTasks;
-      console.log(taskModel);
-      console.log(JSON.stringify(taskModel));
+      await addTask(taskModel)
+      createMessage.success("创建任务成功");
     };
 
     /**
@@ -116,13 +146,14 @@ export default defineComponent({
     function addSubTask() {
       subTasks.value.push({
         sourceTableName: subTaskModel.sourceTableName,
-        sourceFields:subTaskModel.sourceFields.split(","),
-        sourceTypes: subTaskModel.sourceTypes.split(","),
+        sourceFields:subTaskModel.sourceFields,
+        sourceTypes: subTaskModel.sourceTypes,
         pkFields: subTaskModel.pkFields,
         targetType:subTaskModel.targetType,
         targetId:subTaskModel.targetId,
         targetTableName:subTaskModel.targetTableName,
         targetParams:subTaskModel.targetParams,
+        targetDbName:subTaskModel.targetDbName,
         key: new Date().getMilliseconds(),
       });
       visible.value = false;
@@ -135,6 +166,7 @@ export default defineComponent({
     function selectSourceField(val) {
       subTaskModel.sourceFields = val.map(x=>x.split(",")[0]).join(",")
       subTaskModel.sourceTypes = val.map(x=>x.split(",")[1]).join(",")
+      console.log(subTaskModel)
     }
 
     /**
@@ -143,6 +175,43 @@ export default defineComponent({
      */
     function handleDelete(record) {
       subTasks.value = subTasks.value.filter(item => record.key !== item.key);
+    }
+
+    /**
+     * 选择源数据后，获取数据库列表
+     */
+    async function changeDatabases() {
+      databases.value = await getDatabases(taskModel.sourceId)
+    }
+
+    /**
+     * 选择数据库后，获取表列表
+     */
+    async function changeDatabase() {
+      sourceTables.value = await getTables(taskModel.sourceId, taskModel.dbName);
+    }
+
+    /**
+     * 选择数据库后
+     */
+    async function changeSourceTable() {
+      if(taskModel.sourceType != 3 ) {
+        const columns = await getColumns(taskModel.sourceId, subTaskModel.sourceTableName);
+        //Kafka手动输入字段、类型、主键信息， Oracle、Mysql、Kafka自动带入
+        fields.value = columns.columnAndTypes;
+        subTaskModel.tmpSourceFields = columns.columnAndTypes;
+        subTaskModel.sourceFields = columns.columns.join(",")
+        subTaskModel.pkFields = columns.pkColumns.join(",");
+        subTaskModel.sourceTypes = columns.types.join(",");
+      }
+    }
+
+    async function changeTargetDatabases(){
+      targetDatabases.value = await getDatabases(subTaskModel.targetId);
+    }
+
+    async function changeTargetDatabase() {
+      targetTables.value = await getTables(subTaskModel.targetId, subTaskModel.targetDbName);
     }
 
     return {
@@ -157,14 +226,19 @@ export default defineComponent({
       changeDbType,
       sourceDbTypes,
       dbTypes,
-      databases,
+      sourceDatabases,
       allDatabase,
       onSubmit,
       visible,
       placement: 'right',
-      addTask: addSubTask,
+      addSubTask,
       selectSourceField,
       handleDelete,
+      changeDatabases,
+      changeDatabase,
+      changeSourceTable,
+      changeTargetDatabases,
+      changeTargetDatabase,
 
       subTasks ,
 
@@ -178,13 +252,13 @@ export default defineComponent({
           title: '字段列表',
           dataIndex: 'sourceFields',
           key: 'sourceFields',
-          customRender: (sourceFields) => sourceFields.value.join(","),
+          // customRender: (sourceFields) => sourceFields.value.join(","),
         },
         {
           title: '字段类型',
           dataIndex: 'sourceTypes',
           key: 'sourceTypes',
-          customRender: (sourceTypes) => sourceTypes.value.join(","),
+          // customRender: (sourceTypes) => sourceTypes.value.join(","),
         },
         {
           title:'主键列表',
@@ -218,29 +292,12 @@ export default defineComponent({
           slots: { customRender: 'operation' },
         }
       ],
-      // TODO： 动态获取字段列表
-      fields: [
-        {
-          name: 'id',
-          type:'bigint',
-        },
-        {
-          name: 'name',
-          type:'string',
-        },
-        {
-          name: 'age',
-          type:'integer',
-        },
-        {
-          name: 'sex',
-          type:'string',
-        },
-      ],
-      // TODO: 动态获取数据源的表
-      sourceTables:['s_table_1', 's_table_2'],
-      // TODO: 动态获取目标数据库的表
-      targetTables:['target_table_1', 'target_table_2']
+      databases,
+      fields,
+      sourceFields,
+      sourceTables,
+      targetDatabases,
+      targetTables,
     }
   }
 })
@@ -255,15 +312,20 @@ export default defineComponent({
       <a-form-item label="任务描述">
         <a-textarea v-model:value="taskModel.taskDesc"/>
       </a-form-item>
-      <a-form-item label="源数据库类型" >
+      <a-form-item label="源数据类型" >
         <a-select v-model:value = "taskModel.sourceType" placeholder="请选择源数据的类型"
                   @focus="getSourceType" @change="changeSourceType">
           <a-select-option v-for="(item, index) in sourceDbTypes" :value="item.sourceType" :key="index">{{item.sourceName}}</a-select-option>
         </a-select>
       </a-form-item>
-      <a-form-item label="源数据库">
-        <a-select v-model:value = "taskModel.sourceId" placeholder="请选择源数据库">
-          <a-select-option v-for="(item, index) in databases" :value="item.id" :key="index">{{item.dbName}}</a-select-option>
+      <a-form-item label="源数据">
+        <a-select v-model:value = "taskModel.sourceId" placeholder="请选择源数据" @change="changeDatabases">
+          <a-select-option v-for="(item, index) in sourceDatabases" :value="item.id" :key="index">{{item.dbName}}</a-select-option>
+        </a-select>
+      </a-form-item>
+      <a-form-item label="选择数据库">
+        <a-select v-model:value="taskModel.dbName" placeholder = "请选择数据库" @change="changeDatabase">
+          <a-select-option v-for="(dbName, index) in databases" :value = "dbName" :key = "index">{{dbName}}</a-select-option>
         </a-select>
       </a-form-item>
       <a-form-item label="数据源参数">
@@ -271,7 +333,7 @@ export default defineComponent({
       </a-form-item>
       <a-form-item label="子任务">
         <a-button type="primary" @click="visible=true" >新增子任务</a-button>
-        <a-table :dataSource="subTasks" :columns="columns"  >
+        <a-table :dataSource="subTasks" :columns="columns" >
           <template  #operation="{ record }">
             <a-button type="link" @click="handleDelete(record)">
               Delete
@@ -296,20 +358,21 @@ export default defineComponent({
     <a-form :model = "subTaskModel" :label-col="{span: 6}">
 
       <a-form-item label="选择源表">
-        <a-select v-model:value = "subTaskModel.sourceTableName" placeholder="请选择源表">
+        <a-select v-model:value = "subTaskModel.sourceTableName" placeholder="请选择源表" @change="changeSourceTable">
           <a-select-option v-for="(table) in sourceTables" :value = "table">{{table}}</a-select-option>
         </a-select>
       </a-form-item>
 
       <a-form-item label="选择字段">
-        <a-select placeholder="请选择字段列表"
+        <a-select v-model:value = "subTaskModel.tmpSourceFields"
+                  placeholder="请选择字段列表"
                   @change="selectSourceField"
                   mode="multiple">
-          <a-select-option v-for="(item, index) in fields" :value="item.name+','+item.type" :key="index">{{item.name}}({{item.type}})</a-select-option>
+          <a-select-option v-for="(item, index) in fields" :value="item" :key="index">{{item}}</a-select-option>
         </a-select>
       </a-form-item>
       <a-form-item label="字段类型">
-        <a-input v-model:value = "subTaskModel.sourceTypes" />
+        <a-textarea v-model:value = "subTaskModel.sourceTypes" />
       </a-form-item>
       <a-form-item label="主键列表">
         <a-input v-model:value = "subTaskModel.pkFields" />
@@ -319,12 +382,17 @@ export default defineComponent({
           <a-select-option v-for="(item, index) in dbTypes" :value="item.sourceType" :key="index">{{item.sourceName}}</a-select-option>
         </a-select>
       </a-form-item>
-      <a-form-item label="目标数据库">
-        <a-select v-model:value = "subTaskModel.targetId" placeholder="请选择源数据库">
+      <a-form-item label="目标数据">
+        <a-select v-model:value = "subTaskModel.targetId" placeholder="请选择源数据库" @change="changeTargetDatabases">
           <a-select-option v-for="(item, index) in allDatabase" :value="item.id" :key="index">{{item.dbName}}</a-select-option>
         </a-select>
       </a-form-item>
-      <a-form-item label="选择目标表">
+      <a-form-item label="目标数据库">
+        <a-select v-model:value="subTaskModel.targetDbName" placeholder="请选择目标数据库" @change="changeTargetDatabase">
+          <a-select-option v-for="(item, index) in targetDatabases" :value="item" :key = "index" >{{item}}</a-select-option>
+        </a-select>
+      </a-form-item>
+      <a-form-item label="目标表">
         <a-select v-model:value = "subTaskModel.targetTableName" placeholder="请选择目标表">
           <a-select-option v-for="(table) in targetTables" :value = "table">{{table}}</a-select-option>
         </a-select>
@@ -333,7 +401,7 @@ export default defineComponent({
         <a-textarea v-model:value = "subTaskModel.targetParams" />
       </a-form-item>
       <a-form-item>
-        <a-button type="primary" @click="addTask">添加</a-button>
+        <a-button type="primary" @click="addSubTask">添加</a-button>
       </a-form-item>
     </a-form>
   </a-drawer>

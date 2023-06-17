@@ -166,4 +166,10 @@ export const formSchema: FormSchema[] = [
       ],
     },
   },
+  {
+    field: 'oracleDatabase',
+    label: t('exchange.database.form.oracleDatabase'),
+    component: 'Input',
+    ifShow: ({ values }) => values.dbType == DBType.ORACLE,
+  },
 ]

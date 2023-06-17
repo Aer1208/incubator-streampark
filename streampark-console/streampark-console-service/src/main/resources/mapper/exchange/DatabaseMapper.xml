@@ -28,11 +28,12 @@
         <result column="db_pass" jdbcType="VARCHAR" property="dbPass"/>
         <result column="db_connection_params" jdbcType="LONGVARCHAR" property="dbConnectionParams"/>
         <result column="oracle_type" jdbcType="SMALLINT" property="oracleType" />
+        <result column="oracle_database" jdbcType="VARCHAR" property="oracleDatabase" />
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="modify_time" jdbcType="TIMESTAMP" property="modifyTime"/>
     </resultMap>
 
     <select id="getDbTypes">
-        select distinct db_type from t_database;
+        select distinct db_type from t_exchange_database;
     </select>
 </mapper>
