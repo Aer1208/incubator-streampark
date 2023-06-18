@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 
 /** 任务管理服务实列类 */
@@ -54,25 +55,45 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements Ta
   public IPage<Task> findTasks(Task task, RestRequest request) {
     LambdaQueryWrapper<Task> queryWrapper = new LambdaQueryWrapper<>();
 
+    // 根据任务名称模糊查询
     if (StringUtils.isNotEmpty(task.getTaskName())) {
       queryWrapper.like(Task::getTaskName, task.getTaskName());
     }
+
+    // 根据数据源类型查询
     if (task.getSourceType() != null) {
       queryWrapper.eq(Task::getSourceType, task.getSourceType());
     }
 
+    // 根据数据源查询
     if (task.getSourceId() != null) {
       queryWrapper.eq(Task::getSourceId, task.getSourceId());
     }
 
+    // 根据数据库名查询
     if (StringUtils.isNotEmpty(task.getDbName())) {
       queryWrapper.like(Task::getDbName, task.getDbName());
+    }
+
+    // 根据创建时间查询
+    if (StringUtils.isNotEmpty(task.getCreateTimeFrom())) {
+        queryWrapper.ge(Task::getCreateTime, task.getCreateTimeFrom());
+    }
+
+    // 根据创建时间查询
+    if (StringUtils.isNotEmpty(task.getCreateTimeTo())) {
+        queryWrapper.le(Task::getCreateTime, task.getCreateTimeTo());
     }
 
     Page<Task> page = new Page<>();
     page.setCurrent(request.getPageNum());
     page.setSize(request.getPageSize());
     IPage<Task> tasks = baseMapper.selectPage(page, queryWrapper);
+
+    if(tasks.getTotal() == 0) {
+        tasks.setRecords(Collections.emptyList());
+    }
+
     return tasks;
   }
 }

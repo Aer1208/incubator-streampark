@@ -45,4 +45,7 @@ public class Task {
 
   /** 更新时间 */
   private Date modifyTime;
+
+  private transient String createTimeFrom;
+  private transient String createTimeTo;
 }

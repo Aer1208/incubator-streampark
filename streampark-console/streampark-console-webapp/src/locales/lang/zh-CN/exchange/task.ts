@@ -13,5 +13,17 @@ export default {
       targetId: '目标源ID',
       targetTableName: '目标表名称'
     }
+  },
+  form: {
+    taskName: '任务名称',
+    sourceType: '数据源类型',
+    sourceId: '数据源',
+    dbName: '数据库'
+  },
+  table: {
+    title: '数据同步任务列表'
+  },
+  operation: {
+    start: "启动采集任务"
   }
 }

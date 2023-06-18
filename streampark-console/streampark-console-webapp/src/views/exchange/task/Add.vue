@@ -17,7 +17,7 @@
 <script lang="ts">
 
 import {defineComponent, reactive, ref, UnwrapRef} from "vue";
-import {SubTask, Task} from "/@/views/exchange/task/task.types";
+import {SubTask, Task, columns} from "/@/views/exchange/task/task.types";
 import {useI18n} from "/@/hooks/web/useI18n";
 import {useMessage} from "/@/hooks/web/useMessage";
 import {Form, FormItem, Select, Input, Table, Card, Button, Drawer, Tag} from 'ant-design-vue';
@@ -29,6 +29,7 @@ import {
   getSourceDbTypes, getTables
 } from "/@/api/exchange/database/database";
 import {addTask} from "/@/api/exchange/task/task";
+import {useRouter} from "vue-router";
 
 export default defineComponent({
   components:{
@@ -45,6 +46,7 @@ export default defineComponent({
   },
   setup() {
     const { t } = useI18n();
+    const router = useRouter();
     const { createMessage } = useMessage();
     // 支持采集的源数据库类型
     let sourceDbTypes:any = ref<any[]>([]);
@@ -136,8 +138,11 @@ export default defineComponent({
      */
     async function onSubmit() {
       taskModel.subTasks = subTasks;
-      await addTask(taskModel)
-      createMessage.success("创建任务成功");
+      const result:boolean = await addTask(taskModel)
+      if (result) {
+        createMessage.success("创建任务成功");
+        router.push({path : '/exchange/task'});
+      }
     };
 
     /**
@@ -241,63 +246,14 @@ export default defineComponent({
       changeTargetDatabase,
 
       subTasks ,
-
-      columns: [
-        {
-          title: '源表',
-          dataIndex: 'sourceTableName',
-          key: 'sourceTableName',
-        },
-        {
-          title: '字段列表',
-          dataIndex: 'sourceFields',
-          key: 'sourceFields',
-          // customRender: (sourceFields) => sourceFields.value.join(","),
-        },
-        {
-          title: '字段类型',
-          dataIndex: 'sourceTypes',
-          key: 'sourceTypes',
-          // customRender: (sourceTypes) => sourceTypes.value.join(","),
-        },
-        {
-          title:'主键列表',
-          dataIndex:'pkFields',
-          key:'pkFields',
-        },
-        {
-          title:'目标数据库类型',
-          dataIndex:'targetType',
-          key:'targetType',
-        },
-        {
-          title:'目标数据库',
-          dataIndex:'targetId',
-          key:'targetId',
-        },
-        {
-          title:'目标表',
-          dataIndex:'targetTableName',
-          key:'targetTableName',
-        },
-        {
-          title:'目标表其他参数',
-          dataIndex:'targetParams',
-          key:'targetParams',
-        },
-        {
-          title:'删除?',
-          dataIndex:'operation',
-          key:'operation',
-          slots: { customRender: 'operation' },
-        }
-      ],
+      columns,
       databases,
       fields,
       sourceFields,
       sourceTables,
       targetDatabases,
       targetTables,
+      router,
     }
   }
 })
@@ -334,7 +290,7 @@ export default defineComponent({
       <a-form-item label="子任务">
         <a-button type="primary" @click="visible=true" >新增子任务</a-button>
         <a-table :dataSource="subTasks" :columns="columns" >
-          <template  #operation="{ record }">
+          <template  #operation="{column, record }">
             <a-button type="link" @click="handleDelete(record)">
               Delete
             </a-button>
@@ -343,7 +299,7 @@ export default defineComponent({
       </a-form-item>
       <a-form-item :wrapper-col="{ span: 22, offset: 20 }">
         <a-button type="primary" @click="onSubmit">保存</a-button>
-        <a-button style="margin-left: 10px">取消</a-button>
+        <a-button style="margin-left: 10px" @click="router.push({path:'/exchange/task'})">取消</a-button>
       </a-form-item>
     </a-form>
   </a-card>
