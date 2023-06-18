@@ -15,7 +15,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -77,12 +77,12 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements Ta
 
     // 根据创建时间查询
     if (StringUtils.isNotEmpty(task.getCreateTimeFrom())) {
-        queryWrapper.ge(Task::getCreateTime, task.getCreateTimeFrom());
+      queryWrapper.ge(Task::getCreateTime, task.getCreateTimeFrom());
     }
 
     // 根据创建时间查询
     if (StringUtils.isNotEmpty(task.getCreateTimeTo())) {
-        queryWrapper.le(Task::getCreateTime, task.getCreateTimeTo());
+      queryWrapper.le(Task::getCreateTime, task.getCreateTimeTo());
     }
 
     Page<Task> page = new Page<>();
@@ -90,8 +90,8 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task> implements Ta
     page.setSize(request.getPageSize());
     IPage<Task> tasks = baseMapper.selectPage(page, queryWrapper);
 
-    if(tasks.getTotal() == 0) {
-        tasks.setRecords(Collections.emptyList());
+    if (tasks.getTotal() == 0) {
+      tasks.setRecords(Collections.emptyList());
     }
 
     return tasks;
